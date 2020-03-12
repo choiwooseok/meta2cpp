@@ -1,6 +1,10 @@
 # meta2cpp
-meta to cpp Class Generator proj
-
+* meta to cpp Class Generator proj
+    * generate class with methods
+    * fromJson
+    * toString
+    * getter/setter
+    
 # Prerequisite
 * conan - for boost
 

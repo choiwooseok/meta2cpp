@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <boost/property_tree/ptree.hpp>
 
 namespace test {
 namespace examples {
@@ -62,6 +63,7 @@ public:
     void setDept(const std::vector< std::string >& dept);
 public:
     virtual std::string toString();
+    void fromJson(boost::property_tree::ptree& json);
 };
 } /* namespace test */
 } /* namespace examples */

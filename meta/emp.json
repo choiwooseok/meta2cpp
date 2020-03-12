@@ -6,7 +6,8 @@
     "includes" : [
         "string",
         "vector",
-        "memory"
+        "memory",
+        "boost/property_tree/ptree.hpp"
     ],
 
     "fields" : [

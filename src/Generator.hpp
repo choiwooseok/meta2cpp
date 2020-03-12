@@ -138,11 +138,7 @@ public:
             this->outputPath += "/";
         }
 
-        try {
-            boost::property_tree::read_json(metaPath, meta);        
-        } catch (std::exception& e) {
-            std::cerr << e.what() << std::endl;
-        }
+        boost::property_tree::read_json(metaPath, meta);        
 
         className = meta.get<std::string>("class-name");
         for(auto& elem : meta.get_child("namespaces")) {
@@ -159,7 +155,7 @@ public:
 
         startHeaderGuard(fs, classNameUpper);
         for(auto include : includes) {
-            fs << "#include <" << include.second.data() << ">" <<ENDL;
+            fs << "#include <" << include.second.data() << ">" << ENDL;
         }
         fs << ENDL;
 
@@ -211,6 +207,7 @@ public:
         // COMMON METHODS
         fs << "public:" << ENDL;
         fs << TAP << "virtual std::string toString();" << ENDL;
+        fs << TAP << "void fromJson(boost::property_tree::ptree& json);" << ENDL;
 
         endClass(fs);
 
@@ -298,6 +295,39 @@ public:
         }
         fs << TAP << "sb.pop_back();" << ENDL;
         fs << TAP << "return sb;" << ENDL; 
+        fs << "}" << ENDL << ENDL;
+
+        fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
+        for(auto field : fields) {
+            // FIELD INFOS 
+            std::string fieldName = field.second.get<std::string>("fieldName");
+            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
+            bool isArray = field.second.get<bool>("isArray");
+            std::string fieldNameUpper1st = capitalize(fieldName);
+
+            if(isArray) {
+                if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
+                    fs << TAP << TAP << fieldCppType << " elem_ptr = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
+                    fs << TAP << TAP << "elem_ptr->fromJson(elem);" << ENDL;
+                    fs << TAP << TAP << fieldName << ".push_back(elem_ptr);" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                } else {
+                    fs << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
+                    fs << TAP << TAP << fieldName << ".push_back(elem.second.get_value<" << fieldCppType << ">());" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                }
+
+            } else {
+                if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << "boost::property_tree::ptree " << fieldName << "_ = " << "json.get_child(\"" << fieldName << "\");" << ENDL;
+                    fs << TAP << fieldName << "->fromJson(fieldName_);" << ENDL;
+                } else {
+                    fs << TAP << fieldCppType << " " << fieldName << "_ = json.get<" << fieldCppType << ">(\"" << fieldName << "\");" << ENDL;
+                    fs << TAP << "set" << fieldNameUpper1st << "(" << fieldName << "_);" << ENDL;
+                }
+            }
+        }
         fs << "}" << ENDL << ENDL;
 
         endNamespace(fs);

@@ -59,6 +59,18 @@ std::string Emp::toString() {
     return sb;
 }
 
+void Emp::fromJson(boost::property_tree::ptree& json) {
+    int empno_ = json.get<int>("empno");
+    setEmpno(empno_);
+    unsigned long salary_ = json.get<unsigned long>("salary");
+    setSalary(salary_);
+    std::string ename_ = json.get<std::string>("ename");
+    setEname(ename_);
+    for(auto elem : json.get_child("dept")) {
+        dept.push_back(elem.second.get_value<std::string>());
+    }
+}
+
 } /* namespace test */
 } /* namespace examples */
 
