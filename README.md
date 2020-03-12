@@ -58,8 +58,8 @@ make
     ]
 }
 
-// OUTPUTS
-See generated/
-[Header](https://github.com/choiwooseok/meta2cpp/blob/master/generated/Emp.h)
-[Source](https://github.com/choiwooseok/meta2cpp/blob/master/generated/Emp.cpp)
 ```
+# OUTPUTS
+* See generated/
+    * [Header](https://github.com/choiwooseok/meta2cpp/blob/master/generated/Emp.h)
+    * [Source](https://github.com/choiwooseok/meta2cpp/blob/master/generated/Emp.cpp)
