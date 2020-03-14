@@ -286,7 +286,9 @@ public:
                 if(fieldCppType == "std::string") {
                     fs << TAP << "sb += " << fieldName << ";" << ENDL;
                 } else if(starts_with(fieldCppType, "std::shared")) {
-                    fs << TAP << "sb += " << fieldName << "->toString();" << ENDL;
+                    fs << TAP << "if(" << fieldName << " != nullptr) {" << ENDL;
+                    fs << TAP << TAP << "sb += " << fieldName << "->toString();" << ENDL;
+                    fs << TAP << "}" << ENDL;
                 } else {
                     fs << TAP << "sb += std::to_string(" << fieldName << ");" << ENDL;
                 }
@@ -321,6 +323,9 @@ public:
             } else {
                 if(starts_with(fieldCppType, "std::shared")) {
                     fs << TAP << "boost::property_tree::ptree " << fieldName << "_ = " << "json.get_child(\"" << fieldName << "\");" << ENDL;
+                    fs << TAP << "if(" << fieldName << " == nullptr) {" << ENDL;
+                    fs << TAP << TAP << fieldName << " = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
+                    fs << TAP << "}" << ENDL;
                     fs << TAP << fieldName << "->fromJson(" << fieldName << "_);" << ENDL;
                 } else {
                     fs << TAP << fieldCppType << " " << fieldName << "_ = json.get<" << fieldCppType << ">(\"" << fieldName << "\");" << ENDL;
