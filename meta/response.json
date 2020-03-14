@@ -1,0 +1,32 @@
+{
+    "class-name" : "Response",
+    "parent-class-name" : "",
+    "namespaces" : ["test", "examples"],
+
+    "includes" : [
+        "string",
+        "memory",
+        "boost/property_tree/ptree.hpp"
+    ],
+
+    "fields" : [
+        {
+            "fieldName" : "code",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : ""
+        },
+        {
+            "fieldName" : "name",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : ""
+        },
+        {
+            "fieldName" : "desc",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : ""
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "class-name" : "User",
+    "parent-class-name" : "",
+    "namespaces" : ["test", "examples"],
+
+    "includes" : [
+        "string",
+        "vector",
+        "memory",
+        "boost/property_tree/ptree.hpp",
+        "Role.h"
+    ],
+
+    "fields" : [
+        {
+            "fieldName" : "id",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "id"
+        },
+        {
+            "fieldName" : "email",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "email"
+        },
+        {
+            "fieldName" : "username",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "이름"
+        },
+        {
+            "fieldName" : "password",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "비밀번호"
+        },
+        {
+            "fieldName" : "role",
+            "fieldType" : "Role",
+            "isArray" : false,
+            "description" : "role"
+        }
+    ]
+}

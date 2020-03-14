@@ -1,0 +1,33 @@
+{
+    "class-name" : "Role",
+    "parent-class-name" : "",
+    "namespaces" : ["test", "examples"],
+
+    "includes" : [
+        "string",
+        "vector",
+        "memory",
+        "boost/property_tree/ptree.hpp"
+    ],
+
+    "fields" : [
+        {
+            "fieldName" : "roleId",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "roleId"
+        },
+        {
+            "fieldName" : "roleName",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "roleName"
+        },
+        {
+            "fieldName" : "available",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "비밀번호"
+        }
+    ]
+}
