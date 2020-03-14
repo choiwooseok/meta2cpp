@@ -321,7 +321,7 @@ public:
             } else {
                 if(starts_with(fieldCppType, "std::shared")) {
                     fs << TAP << "boost::property_tree::ptree " << fieldName << "_ = " << "json.get_child(\"" << fieldName << "\");" << ENDL;
-                    fs << TAP << fieldName << "->fromJson(fieldName_);" << ENDL;
+                    fs << TAP << fieldName << "->fromJson(" << fieldName << "_);" << ENDL;
                 } else {
                     fs << TAP << fieldCppType << " " << fieldName << "_ = json.get<" << fieldCppType << ">(\"" << fieldName << "\");" << ENDL;
                     fs << TAP << "set" << fieldNameUpper1st << "(" << fieldName << "_);" << ENDL;
