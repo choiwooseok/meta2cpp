@@ -22,11 +22,11 @@ private:
     * fieldName : code
     * fieldDesc : 
     */
-    std::string code;
+    int code;
 
 public:
-    std::string getCode();
-    void setCode(const std::string& code);
+    int getCode();
+    void setCode(int code);
 
 private:
     /**
@@ -49,6 +49,17 @@ private:
 public:
     std::string getDesc();
     void setDesc(const std::string& desc);
+
+private:
+    /**
+    * fieldName : except
+    * fieldDesc : 
+    */
+    bool except;
+
+public:
+    bool getExcept();
+    void setExcept(bool except);
 
 public:
     virtual std::string toString();

@@ -22,7 +22,7 @@ std::shared_ptr<Response> foo(std::shared_ptr<User> target) {
      * Do Something;
      */
     std::shared_ptr<Response> response = std::make_shared<Response>();
-    response->setCode("200");
+    response->setCode(200);
     response->setName("OK");
     response->setDesc("NORMAL");
     return response;

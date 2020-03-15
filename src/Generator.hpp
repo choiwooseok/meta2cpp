@@ -261,22 +261,23 @@ public:
         // COMMON METHODS
         fs << "std::string " << className << "::toString() {" << ENDL;
         fs << TAP << "std::string sb = \"\";" << ENDL; 
+        fs << TAP << "sb += \"{\";"<< ENDL;
         for(auto field : fields) {
             // FIELD INFOS 
             std::string fieldName = field.second.get<std::string>("fieldName");
             std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
             bool isArray = field.second.get<bool>("isArray");
 
-            fs << TAP << "sb += \"" << fieldName << " : \"" << ";" << ENDL;
+            fs << TAP << "sb += \"" << "\\\"" << fieldName << "\\\"" << " : \";" << ENDL;
             if(isArray) {
                 fs << TAP << "sb += \"[\";"<< ENDL;
                 fs << TAP << "for(auto elem : " << fieldName << ") {" << ENDL;
                 if(fieldCppType == "std::string") {
-                    fs << TAP << TAP << "sb += elem;" << ENDL;
+                    fs << TAP << TAP << "sb += \"\\\"\" + " << "elem" << " + \"\\\"\";" << ENDL;
                 } else if(starts_with(fieldCppType, "std::shared")) {
                     fs << TAP << TAP << "sb += elem->toString();" << ENDL;
                 } else {
-                    fs << TAP << TAP << "sb += std::to_string(elem);" << ENDL;
+                    fs << TAP << TAP << "sb += \"\\\"\" + " << "std::to_string(elem)" << " + \"\\\"\";" << ENDL;
                 }
                 fs << TAP << TAP << "sb += \",\";" << ENDL;
                 fs << TAP << "}" << ENDL;
@@ -284,18 +285,19 @@ public:
                 fs << TAP << "sb += \"]\";"<< ENDL;
             } else {
                 if(fieldCppType == "std::string") {
-                    fs << TAP << "sb += " << fieldName << ";" << ENDL;
+                    fs << TAP << "sb += \"\\\"\" + " << fieldName << " + \"\\\"\";" << ENDL;
                 } else if(starts_with(fieldCppType, "std::shared")) {
                     fs << TAP << "if(" << fieldName << " != nullptr) {" << ENDL;
                     fs << TAP << TAP << "sb += " << fieldName << "->toString();" << ENDL;
                     fs << TAP << "}" << ENDL;
                 } else {
-                    fs << TAP << "sb += std::to_string(" << fieldName << ");" << ENDL;
+                    fs << TAP << "sb += \"\\\"\" + " << " std::to_string(" << fieldName << ")" << " + \"\\\"\";" << ENDL;
                 }
             }
             fs << TAP << "sb += \",\";" << ENDL;
         }
         fs << TAP << "sb.pop_back();" << ENDL;
+        fs << TAP << "sb += \"}\";"<< ENDL;
         fs << TAP << "return sb;" << ENDL; 
         fs << "}" << ENDL << ENDL;
 

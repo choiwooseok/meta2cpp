@@ -37,25 +37,27 @@ void Emp::setDept(const std::vector< std::string >& dept) {
 
 std::string Emp::toString() {
     std::string sb = "";
-    sb += "empno : ";
-    sb += std::to_string(empno);
+    sb += "{";
+    sb += "\"empno\" : ";
+    sb += "\"" +  std::to_string(empno) + "\"";
     sb += ",";
-    sb += "salary : ";
-    sb += std::to_string(salary);
+    sb += "\"salary\" : ";
+    sb += "\"" +  std::to_string(salary) + "\"";
     sb += ",";
-    sb += "ename : ";
-    sb += ename;
+    sb += "\"ename\" : ";
+    sb += "\"" + ename + "\"";
     sb += ",";
-    sb += "dept : ";
+    sb += "\"dept\" : ";
     sb += "[";
     for(auto elem : dept) {
-        sb += elem;
+        sb += "\"" + elem + "\"";
         sb += ",";
     }
     sb.pop_back();
     sb += "]";
     sb += ",";
     sb.pop_back();
+    sb += "}";
     return sb;
 }
 

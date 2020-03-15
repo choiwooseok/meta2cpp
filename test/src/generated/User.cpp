@@ -45,24 +45,26 @@ void User::setRole(std::shared_ptr<Role> role) {
 
 std::string User::toString() {
     std::string sb = "";
-    sb += "id : ";
-    sb += id;
+    sb += "{";
+    sb += "\"id\" : ";
+    sb += "\"" + id + "\"";
     sb += ",";
-    sb += "email : ";
-    sb += email;
+    sb += "\"email\" : ";
+    sb += "\"" + email + "\"";
     sb += ",";
-    sb += "username : ";
-    sb += username;
+    sb += "\"username\" : ";
+    sb += "\"" + username + "\"";
     sb += ",";
-    sb += "password : ";
-    sb += password;
+    sb += "\"password\" : ";
+    sb += "\"" + password + "\"";
     sb += ",";
-    sb += "role : ";
+    sb += "\"role\" : ";
     if(role != nullptr) {
         sb += role->toString();
     }
     sb += ",";
     sb.pop_back();
+    sb += "}";
     return sb;
 }
 

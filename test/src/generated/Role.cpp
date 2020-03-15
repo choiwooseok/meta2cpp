@@ -29,16 +29,18 @@ void Role::setAvailable(const std::string& available) {
 
 std::string Role::toString() {
     std::string sb = "";
-    sb += "roleId : ";
-    sb += roleId;
+    sb += "{";
+    sb += "\"roleId\" : ";
+    sb += "\"" + roleId + "\"";
     sb += ",";
-    sb += "roleName : ";
-    sb += roleName;
+    sb += "\"roleName\" : ";
+    sb += "\"" + roleName + "\"";
     sb += ",";
-    sb += "available : ";
-    sb += available;
+    sb += "\"available\" : ";
+    sb += "\"" + available + "\"";
     sb += ",";
     sb.pop_back();
+    sb += "}";
     return sb;
 }
 

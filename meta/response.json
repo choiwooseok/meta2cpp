@@ -12,7 +12,7 @@
     "fields" : [
         {
             "fieldName" : "code",
-            "fieldType" : "string",
+            "fieldType" : "int",
             "isArray" : false,
             "description" : ""
         },
