@@ -18,4 +18,6 @@ ADD_EXECUTABLE(codeGen ${SOURCE}
 
 TARGET_LINK_LIBRARIES(codeGen
     boost_program_options
+    boost_system
+    boost_filesystem
 )

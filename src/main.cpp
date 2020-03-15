@@ -1,5 +1,6 @@
 #include <iostream>
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 #include "Generator.hpp"
 
 int main(int argc, char** argv) {
@@ -22,6 +23,10 @@ int main(int argc, char** argv) {
         std::string in = vm["input"].as<std::string>();
         std::string out = vm["output"].as<std::string>();
 
+        if(!boost::filesystem::exists(out)) {
+            throw std::runtime_error("output dir does not exists");
+        }
+        
         using namespace meta2Cpp;
         Generator g(in, out);
         g.generateHeader();
