@@ -45,12 +45,18 @@ std::string Role::toString() {
 }
 
 void Role::fromJson(boost::property_tree::ptree& json) {
-    std::string roleId_ = json.get<std::string>("roleId");
-    setRoleId(roleId_);
-    std::string roleName_ = json.get<std::string>("roleName");
-    setRoleName(roleName_);
-    std::string available_ = json.get<std::string>("available");
-    setAvailable(available_);
+    if(json.find("roleId") != json.not_found()) {
+        std::string roleId_ = json.get<std::string>("roleId");
+        setRoleId(roleId_);
+    }
+    if(json.find("roleName") != json.not_found()) {
+        std::string roleName_ = json.get<std::string>("roleName");
+        setRoleName(roleName_);
+    }
+    if(json.find("available") != json.not_found()) {
+        std::string available_ = json.get<std::string>("available");
+        setAvailable(available_);
+    }
 }
 
 } /* namespace test */

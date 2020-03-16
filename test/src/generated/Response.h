@@ -50,17 +50,6 @@ public:
     std::string getDesc();
     void setDesc(const std::string& desc);
 
-private:
-    /**
-    * fieldName : except
-    * fieldDesc : 
-    */
-    bool except;
-
-public:
-    bool getExcept();
-    void setExcept(bool except);
-
 public:
     virtual std::string toString();
     void fromJson(boost::property_tree::ptree& json);

@@ -102,6 +102,98 @@ private:
         fs << TAP << "virtual ~"<< className << "() = default;" << ENDL << ENDL;
     }
 
+    void generate_toString(std::ofstream& fs, const std::string& className, boost::property_tree::ptree& fields) {
+        fs << "std::string " << className << "::toString() {" << ENDL;
+        fs << TAP << "std::string sb = \"\";" << ENDL; 
+        fs << TAP << "sb += \"{\";"<< ENDL;
+        for(auto field : fields) {
+            // FIELD INFOS 
+            std::string fieldName = field.second.get<std::string>("fieldName");
+            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
+            bool isArray = field.second.get<bool>("isArray");
+
+            fs << TAP << "sb += \"" << "\\\"" << fieldName << "\\\"" << " : \";" << ENDL;
+            if(isArray) {
+                fs << TAP << "sb += \"[\";"<< ENDL;
+                fs << TAP << "for(auto elem : " << fieldName << ") {" << ENDL;
+                if(fieldCppType == "std::string") {
+                    fs << TAP << TAP << "sb += \"\\\"\" + " << "elem" << " + \"\\\"\";" << ENDL;
+                } else if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << TAP << "sb += elem->toString();" << ENDL;
+                } else {
+                    fs << TAP << TAP << "sb += \"\\\"\" + " << "std::to_string(elem)" << " + \"\\\"\";" << ENDL;
+                }
+                fs << TAP << TAP << "sb += \",\";" << ENDL;
+                fs << TAP << "}" << ENDL;
+                fs << TAP << "sb.pop_back();" << ENDL;
+                fs << TAP << "sb += \"]\";"<< ENDL;
+            } else {
+                if(fieldCppType == "std::string") {
+                    fs << TAP << "sb += \"\\\"\" + " << fieldName << " + \"\\\"\";" << ENDL;
+                } else if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << "if(" << fieldName << " != nullptr) {" << ENDL;
+                    fs << TAP << TAP << "sb += " << fieldName << "->toString();" << ENDL;
+                    fs << TAP << "} else {" << ENDL;
+                    fs << TAP << TAP << "sb += \"null\";" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                } else {
+                    fs << TAP << "sb += \"\\\"\" + " << " std::to_string(" << fieldName << ")" << " + \"\\\"\";" << ENDL;
+                }
+            }
+            fs << TAP << "sb += \",\";" << ENDL;
+        }
+        fs << TAP << "sb.pop_back();" << ENDL;
+        fs << TAP << "sb += \"}\";"<< ENDL;
+        fs << TAP << "return sb;" << ENDL; 
+        fs << "}" << ENDL << ENDL;
+    }
+
+    void generate_fromJson(std::ofstream& fs, const std::string& className, boost::property_tree::ptree& fields) {
+        fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
+        for(auto field : fields) {
+            // FIELD INFOS 
+            std::string fieldName = field.second.get<std::string>("fieldName");
+            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
+            bool isArray = field.second.get<bool>("isArray");
+            std::string fieldNameUpper1st = capitalize(fieldName);
+
+            if(isArray) {
+                if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << "if(json.find(\"" << fieldName << "\") != json.not_found()) {" << ENDL;
+                    fs << TAP << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
+                    fs << TAP << TAP << TAP << fieldCppType << " elem_ptr = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
+                    fs << TAP << TAP << TAP << "elem_ptr->fromJson(elem);" << ENDL;
+                    fs << TAP << TAP << TAP << fieldName << ".push_back(elem_ptr);" << ENDL;
+                    fs << TAP << TAP << "}" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                } else {
+                    fs << TAP << "if(json.find(\"" << fieldName << "\") != json.not_found()) {" << ENDL;
+                    fs << TAP << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
+                    fs << TAP << TAP << TAP << fieldName << ".push_back(elem.second.get_value<" << fieldCppType << ">());" << ENDL;
+                    fs << TAP << TAP << "}" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                }
+
+            } else {
+                if(starts_with(fieldCppType, "std::shared")) {
+                    fs << TAP << "if(json.find(\"" << fieldName << "\") != json.not_found()) {" << ENDL;
+                    fs << TAP << TAP << "boost::property_tree::ptree " << fieldName << "_ = " << "json.get_child(\"" << fieldName << "\");" << ENDL;
+                    fs << TAP << TAP << "if(" << fieldName << " == nullptr) {" << ENDL;
+                    fs << TAP << TAP << TAP << fieldName << " = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
+                    fs << TAP << TAP << "}" << ENDL;
+                    fs << TAP << TAP << fieldName << "->fromJson(" << fieldName << "_);" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                } else {
+                    fs << TAP << "if(json.find(\"" << fieldName << "\") != json.not_found()) {" << ENDL;
+                    fs << TAP << TAP << fieldCppType << " " << fieldName << "_ = json.get<" << fieldCppType << ">(\"" << fieldName << "\");" << ENDL;
+                    fs << TAP << TAP << "set" << fieldNameUpper1st << "(" << fieldName << "_);" << ENDL;
+                    fs << TAP << "}" << ENDL;
+                }
+            }
+        }
+        fs << "}" << ENDL << ENDL;
+    }
+
 public:
     // UTILITY FUNCTIONS
     std::string toUpper(const std::string& str) {
@@ -259,83 +351,9 @@ public:
         }
 
         // COMMON METHODS
-        fs << "std::string " << className << "::toString() {" << ENDL;
-        fs << TAP << "std::string sb = \"\";" << ENDL; 
-        fs << TAP << "sb += \"{\";"<< ENDL;
-        for(auto field : fields) {
-            // FIELD INFOS 
-            std::string fieldName = field.second.get<std::string>("fieldName");
-            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
-            bool isArray = field.second.get<bool>("isArray");
+        generate_toString(fs, className, fields);
 
-            fs << TAP << "sb += \"" << "\\\"" << fieldName << "\\\"" << " : \";" << ENDL;
-            if(isArray) {
-                fs << TAP << "sb += \"[\";"<< ENDL;
-                fs << TAP << "for(auto elem : " << fieldName << ") {" << ENDL;
-                if(fieldCppType == "std::string") {
-                    fs << TAP << TAP << "sb += \"\\\"\" + " << "elem" << " + \"\\\"\";" << ENDL;
-                } else if(starts_with(fieldCppType, "std::shared")) {
-                    fs << TAP << TAP << "sb += elem->toString();" << ENDL;
-                } else {
-                    fs << TAP << TAP << "sb += \"\\\"\" + " << "std::to_string(elem)" << " + \"\\\"\";" << ENDL;
-                }
-                fs << TAP << TAP << "sb += \",\";" << ENDL;
-                fs << TAP << "}" << ENDL;
-                fs << TAP << "sb.pop_back();" << ENDL;
-                fs << TAP << "sb += \"]\";"<< ENDL;
-            } else {
-                if(fieldCppType == "std::string") {
-                    fs << TAP << "sb += \"\\\"\" + " << fieldName << " + \"\\\"\";" << ENDL;
-                } else if(starts_with(fieldCppType, "std::shared")) {
-                    fs << TAP << "if(" << fieldName << " != nullptr) {" << ENDL;
-                    fs << TAP << TAP << "sb += " << fieldName << "->toString();" << ENDL;
-                    fs << TAP << "}" << ENDL;
-                } else {
-                    fs << TAP << "sb += \"\\\"\" + " << " std::to_string(" << fieldName << ")" << " + \"\\\"\";" << ENDL;
-                }
-            }
-            fs << TAP << "sb += \",\";" << ENDL;
-        }
-        fs << TAP << "sb.pop_back();" << ENDL;
-        fs << TAP << "sb += \"}\";"<< ENDL;
-        fs << TAP << "return sb;" << ENDL; 
-        fs << "}" << ENDL << ENDL;
-
-        fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
-        for(auto field : fields) {
-            // FIELD INFOS 
-            std::string fieldName = field.second.get<std::string>("fieldName");
-            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
-            bool isArray = field.second.get<bool>("isArray");
-            std::string fieldNameUpper1st = capitalize(fieldName);
-
-            if(isArray) {
-                if(starts_with(fieldCppType, "std::shared")) {
-                    fs << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
-                    fs << TAP << TAP << fieldCppType << " elem_ptr = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
-                    fs << TAP << TAP << "elem_ptr->fromJson(elem);" << ENDL;
-                    fs << TAP << TAP << fieldName << ".push_back(elem_ptr);" << ENDL;
-                    fs << TAP << "}" << ENDL;
-                } else {
-                    fs << TAP << "for(auto elem : json.get_child(\"" << fieldName << "\")) {" << ENDL;
-                    fs << TAP << TAP << fieldName << ".push_back(elem.second.get_value<" << fieldCppType << ">());" << ENDL;
-                    fs << TAP << "}" << ENDL;
-                }
-
-            } else {
-                if(starts_with(fieldCppType, "std::shared")) {
-                    fs << TAP << "boost::property_tree::ptree " << fieldName << "_ = " << "json.get_child(\"" << fieldName << "\");" << ENDL;
-                    fs << TAP << "if(" << fieldName << " == nullptr) {" << ENDL;
-                    fs << TAP << TAP << fieldName << " = std::make_shared<" << field.second.get<std::string>("fieldType") << ">();" << ENDL;
-                    fs << TAP << "}" << ENDL;
-                    fs << TAP << fieldName << "->fromJson(" << fieldName << "_);" << ENDL;
-                } else {
-                    fs << TAP << fieldCppType << " " << fieldName << "_ = json.get<" << fieldCppType << ">(\"" << fieldName << "\");" << ENDL;
-                    fs << TAP << "set" << fieldNameUpper1st << "(" << fieldName << "_);" << ENDL;
-                }
-            }
-        }
-        fs << "}" << ENDL << ENDL;
+        generate_fromJson(fs, className, fields);
 
         endNamespace(fs);
         fs.close();

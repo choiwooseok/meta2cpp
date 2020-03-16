@@ -61,6 +61,8 @@ std::string User::toString() {
     sb += "\"role\" : ";
     if(role != nullptr) {
         sb += role->toString();
+    } else {
+        sb += "null";
     }
     sb += ",";
     sb.pop_back();
@@ -69,19 +71,29 @@ std::string User::toString() {
 }
 
 void User::fromJson(boost::property_tree::ptree& json) {
-    std::string id_ = json.get<std::string>("id");
-    setId(id_);
-    std::string email_ = json.get<std::string>("email");
-    setEmail(email_);
-    std::string username_ = json.get<std::string>("username");
-    setUsername(username_);
-    std::string password_ = json.get<std::string>("password");
-    setPassword(password_);
-    boost::property_tree::ptree role_ = json.get_child("role");
-    if(role == nullptr) {
-        role = std::make_shared<Role>();
+    if(json.find("id") != json.not_found()) {
+        std::string id_ = json.get<std::string>("id");
+        setId(id_);
     }
-    role->fromJson(role_);
+    if(json.find("email") != json.not_found()) {
+        std::string email_ = json.get<std::string>("email");
+        setEmail(email_);
+    }
+    if(json.find("username") != json.not_found()) {
+        std::string username_ = json.get<std::string>("username");
+        setUsername(username_);
+    }
+    if(json.find("password") != json.not_found()) {
+        std::string password_ = json.get<std::string>("password");
+        setPassword(password_);
+    }
+    if(json.find("role") != json.not_found()) {
+        boost::property_tree::ptree role_ = json.get_child("role");
+        if(role == nullptr) {
+            role = std::make_shared<Role>();
+        }
+        role->fromJson(role_);
+    }
 }
 
 } /* namespace test */
