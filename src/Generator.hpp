@@ -102,7 +102,7 @@ private:
         fs << TAP << "virtual ~"<< className << "() = default;" << ENDL << ENDL;
     }
 
-    void generate_toString(std::ofstream& fs, const std::string& className, boost::property_tree::ptree& fields) {
+    void generate_toString(std::ofstream& fs, boost::property_tree::ptree& fields) {
         fs << "std::string " << className << "::toString() {" << ENDL;
         fs << TAP << "std::string sb = \"\";" << ENDL; 
         fs << TAP << "sb += \"{\";"<< ENDL;
@@ -148,7 +148,7 @@ private:
         fs << "}" << ENDL << ENDL;
     }
 
-    void generate_fromJson(std::ofstream& fs, const std::string& className, boost::property_tree::ptree& fields) {
+    void generate_fromJson(std::ofstream& fs, boost::property_tree::ptree& fields) {
         fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
         for(auto field : fields) {
             // FIELD INFOS 
@@ -351,9 +351,9 @@ public:
         }
 
         // COMMON METHODS
-        generate_toString(fs, className, fields);
+        generate_toString(fs, fields);
 
-        generate_fromJson(fs, className, fields);
+        generate_fromJson(fs, fields);
 
         endNamespace(fs);
         fs.close();
