@@ -102,7 +102,41 @@ private:
         fs << TAP << "virtual ~"<< className << "() = default;" << ENDL << ENDL;
     }
 
-    void generate_toString(std::ofstream& fs, boost::property_tree::ptree& fields) {
+    void generateGetterSetter(std::ofstream& fs, boost::property_tree::ptree& fields) {
+        for(auto field : fields) {
+            std::string fieldName = field.second.get<std::string>("fieldName");
+            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
+            bool isArray = field.second.get<bool>("isArray");
+            std::string fieldNameUpper1st = capitalize(fieldName);
+
+            if(isArray) {
+                fs << "std::vector< " << fieldCppType << " >& " << className <<"::get" << fieldNameUpper1st << "() {" << ENDL;
+                fs << TAP << "return " << fieldName << ";" << ENDL;
+                fs << "}" << ENDL << ENDL;
+
+                fs << "void " << className << "::set" << fieldNameUpper1st << "(const std::vector< " << fieldCppType << " >& " << toLower(fieldName) << ") {" << ENDL;
+                fs << TAP << "this->" << fieldName << " = " << toLower(fieldName) << ";" << ENDL;
+                fs << "}" << ENDL << ENDL;
+
+            } else {
+                fs << fieldCppType << " " << className << "::get" << fieldNameUpper1st << "() {" << ENDL;
+                fs << TAP << "return " << fieldName << ";" << ENDL;
+                fs << "}" << ENDL << ENDL;
+
+                std::string setterParamStr = "";
+                if(fieldCppType == "std::string") {
+                    setterParamStr = "const std::string& " + toLower(fieldName);
+                } else {
+                    setterParamStr = fieldCppType + " " + toLower(fieldName);
+                }
+                fs << "void " << className << "::set" << fieldNameUpper1st << "(" << setterParamStr << ") {" << ENDL;
+                fs << TAP << "this->" << fieldName << " = " << toLower(fieldName) << ";" << ENDL;
+                fs << "}" << ENDL << ENDL;
+            }
+        }
+    }
+
+    void generateToString(std::ofstream& fs, boost::property_tree::ptree& fields) {
         fs << "std::string " << className << "::toString() {" << ENDL;
         fs << TAP << "std::string sb = \"\";" << ENDL; 
         fs << TAP << "sb += \"{\";"<< ENDL;
@@ -148,7 +182,7 @@ private:
         fs << "}" << ENDL << ENDL;
     }
 
-    void generate_fromJson(std::ofstream& fs, boost::property_tree::ptree& fields) {
+    void generateFromJson(std::ofstream& fs, boost::property_tree::ptree& fields) {
         fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
         for(auto field : fields) {
             // FIELD INFOS 
@@ -316,44 +350,10 @@ public:
         startNamespace(fs);
 
         boost::property_tree::ptree fields = meta.get_child("fields");
-        for(auto field : fields) {
-            // FIELD INFOS 
-            std::string fieldName = field.second.get<std::string>("fieldName");
-            std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
-            bool isArray = field.second.get<bool>("isArray");
-            std::string fieldNameUpper1st = capitalize(fieldName);
 
-            // GETTER & SETTER
-            if(isArray) {
-                fs << "std::vector< " << fieldCppType << " >& " << className <<"::get" << fieldNameUpper1st << "() {" << ENDL;
-                fs << TAP << "return " << fieldName << ";" << ENDL;
-                fs << "}" << ENDL << ENDL;
-
-                fs << "void " << className << "::set" << fieldNameUpper1st << "(const std::vector< " << fieldCppType << " >& " << toLower(fieldName) << ") {" << ENDL;
-                fs << TAP << "this->" << fieldName << " = " << toLower(fieldName) << ";" << ENDL;
-                fs << "}" << ENDL << ENDL;
-
-            } else {
-                fs << fieldCppType << " " << className << "::get" << fieldNameUpper1st << "() {" << ENDL;
-                fs << TAP << "return " << fieldName << ";" << ENDL;
-                fs << "}" << ENDL << ENDL;
-
-                std::string setterParamStr = "";
-                if(fieldCppType == "std::string") {
-                    setterParamStr = "const std::string& " + toLower(fieldName);
-                } else {
-                    setterParamStr = fieldCppType + " " + toLower(fieldName);
-                }
-                fs << "void " << className << "::set" << fieldNameUpper1st << "(" << setterParamStr << ") {" << ENDL;
-                fs << TAP << "this->" << fieldName << " = " << toLower(fieldName) << ";" << ENDL;
-                fs << "}" << ENDL << ENDL;
-            }
-        }
-
-        // COMMON METHODS
-        generate_toString(fs, fields);
-
-        generate_fromJson(fs, fields);
+        generateGetterSetter(fs, fields);
+        generateToString(fs, fields);
+        generateFromJson(fs, fields);
 
         endNamespace(fs);
         fs.close();
