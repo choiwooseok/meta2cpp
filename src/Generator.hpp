@@ -23,6 +23,9 @@ private:
     boost::property_tree::ptree meta;
 
     std::string className;
+    std::string classNameUpper;
+    std::string parentClassName;
+
     std::vector<std::string> ns;
 
     std::unordered_map<std::string, std::string> cppTypes = {
@@ -51,12 +54,12 @@ private:
         }
     }
 
-    void startHeaderGuard(std::ofstream& fs, const std::string& classNameUpper) {
+    void startHeaderGuard(std::ofstream& fs) {
         fs << "#ifndef " << classNameUpper << "_H_" << ENDL;
         fs << "#define " << classNameUpper << "_H_" << ENDL << ENDL;
     }
 
-    void endHeaderGuard(std::ofstream& fs, const std::string& classNameUpper) {
+    void endHeaderGuard(std::ofstream& fs) {
         fs << "#endif /* " << classNameUpper << "_H_ */" << ENDL;
     }
 
@@ -78,7 +81,7 @@ private:
         }
     }
 
-    void startClass(std::ofstream& fs, const std::string& parentClassName) {
+    void startClass(std::ofstream& fs) {
         fs << "class " << className;
         if(!parentClassName.empty()) {
             fs << ": public " << parentClassName << " {";
@@ -267,6 +270,8 @@ public:
         boost::property_tree::read_json(metaPath, meta);        
 
         className = meta.get<std::string>("class-name");
+        classNameUpper = toUpper(className);
+        parentClassName = meta.get<std::string>("parent-class-name", "");
         for(auto& elem : meta.get_child("namespaces")) {
             ns.push_back(elem.second.data());
         };
@@ -274,12 +279,10 @@ public:
 
     void generateHeader() {
         std::ofstream fs(outputPath + className + ".h");
-        std::string classNameUpper = toUpper(className);
-        std::string parentClassName = meta.get<std::string>("parent-class-name", "");
         boost::property_tree::ptree fields = meta.get_child("fields");
         boost::property_tree::ptree includes = meta.get_child("includes");
 
-        startHeaderGuard(fs, classNameUpper);
+        startHeaderGuard(fs);
         for(auto include : includes) {
             fs << "#include <" << include.second.data() << ">" << ENDL;
         }
@@ -287,7 +290,7 @@ public:
 
         startNamespace(fs);
 
-        startClass(fs, parentClassName);
+        startClass(fs);
 
         ruleOfZero(fs);
 
@@ -339,7 +342,7 @@ public:
 
         endNamespace(fs);
 
-        endHeaderGuard(fs, classNameUpper);
+        endHeaderGuard(fs);
         fs.close();
     }
 
