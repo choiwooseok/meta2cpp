@@ -18,7 +18,7 @@ make
 
 # Usage
 ```
-./bin/codeGen -i ../meta/emp.json -o ../generated/
+./bin/codeGen -i ../meta/emp.json -o ../test/src/generated/
 ```
 
 # Exmaples
