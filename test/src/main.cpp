@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <Props.h>
 #include <User.h>
 #include <Role.h>
 #include <Response.h>
@@ -28,7 +29,23 @@ std::shared_ptr<Response> foo(std::shared_ptr<User> target) {
     return response;
 }
 
+void useCaseMessageProps() {
+    boost::property_tree::ptree pt;
+    boost::property_tree::read_json("../src/lang/en.json", pt);
+
+    Props props;
+    props.fromJson(pt);
+    std::cout << props.getEname() << std::endl;
+
+    pt.clear();
+    boost::property_tree::read_json("../src/lang/kr.json", pt);
+    props.fromJson(pt);
+    std::cout << props.getEname() << std::endl;
+}
+
 int main(int argc, char** argv) {
+    useCaseMessageProps();
+
     std::string userJson = R"(
         {
             "id" : "1",

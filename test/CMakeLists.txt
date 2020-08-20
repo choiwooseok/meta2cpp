@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
 
 ADD_EXECUTABLE(tapp
     src/main.cpp
+    src/generated/Props.cpp
     src/generated/Response.cpp
     src/generated/Role.cpp
     src/generated/User.cpp
