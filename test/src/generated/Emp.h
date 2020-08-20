@@ -11,59 +11,59 @@ namespace examples {
 
 class Emp {
 public:
-    Emp() = default;
-    Emp(const Emp&) = default;
-    Emp(Emp&&) = default;
-    Emp& operator=(const Emp&) = default;
-    Emp& operator=(Emp&&) = default;
-    virtual ~Emp() = default;
+  Emp() = default;
+  Emp(const Emp&) = default;
+  Emp(Emp&&) = default;
+  Emp& operator=(const Emp&) = default;
+  Emp& operator=(Emp&&) = default;
+  virtual ~Emp() = default;
 
 private:
-    /**
-    * fieldName : empno
-    * fieldDesc : 사번
-    */
-    int empno;
+  /**
+  * fieldName : empno
+  * fieldDesc : 사번
+  */
+  int empno;
 
 public:
-    int getEmpno();
-    void setEmpno(int empno);
+  int getEmpno();
+  void setEmpno(int empno);
 
 private:
-    /**
-    * fieldName : salary
-    * fieldDesc : 임금
-    */
-    unsigned long salary;
+  /**
+  * fieldName : salary
+  * fieldDesc : 임금
+  */
+  unsigned long salary;
 
 public:
-    unsigned long getSalary();
-    void setSalary(unsigned long salary);
+  unsigned long getSalary();
+  void setSalary(unsigned long salary);
 
 private:
-    /**
-    * fieldName : ename
-    * fieldDesc : 이름
-    */
-    std::string ename;
+  /**
+  * fieldName : ename
+  * fieldDesc : 이름
+  */
+  std::string ename;
 
 public:
-    std::string getEname();
-    void setEname(const std::string& ename);
+  std::string getEname();
+  void setEname(const std::string& ename);
 
 private:
-    /**
-    * fieldName : dept
-    * fieldDesc : 부서
-    */
-    std::vector< std::string > dept;
+  /**
+  * fieldName : dept
+  * fieldDesc : 부서
+  */
+  std::vector< std::string > dept;
 
 public:
-    std::vector< std::string >& getDept();
-    void setDept(const std::vector< std::string >& dept);
+  std::vector< std::string >& getDept();
+  void setDept(const std::vector< std::string >& dept);
 public:
-    virtual std::string toString();
-    void fromJson(boost::property_tree::ptree& json);
+  virtual std::string toString();
+  void fromJson(boost::property_tree::ptree& json);
 };
 } /* namespace test */
 } /* namespace examples */

@@ -10,49 +10,49 @@ namespace examples {
 
 class Response {
 public:
-    Response() = default;
-    Response(const Response&) = default;
-    Response(Response&&) = default;
-    Response& operator=(const Response&) = default;
-    Response& operator=(Response&&) = default;
-    virtual ~Response() = default;
+  Response() = default;
+  Response(const Response&) = default;
+  Response(Response&&) = default;
+  Response& operator=(const Response&) = default;
+  Response& operator=(Response&&) = default;
+  virtual ~Response() = default;
 
 private:
-    /**
-    * fieldName : code
-    * fieldDesc : 
-    */
-    int code;
+  /**
+  * fieldName : code
+  * fieldDesc : 
+  */
+  int code;
 
 public:
-    int getCode();
-    void setCode(int code);
+  int getCode();
+  void setCode(int code);
 
 private:
-    /**
-    * fieldName : name
-    * fieldDesc : 
-    */
-    std::string name;
+  /**
+  * fieldName : name
+  * fieldDesc : 
+  */
+  std::string name;
 
 public:
-    std::string getName();
-    void setName(const std::string& name);
+  std::string getName();
+  void setName(const std::string& name);
 
 private:
-    /**
-    * fieldName : desc
-    * fieldDesc : 
-    */
-    std::string desc;
+  /**
+  * fieldName : desc
+  * fieldDesc : 
+  */
+  std::string desc;
 
 public:
-    std::string getDesc();
-    void setDesc(const std::string& desc);
+  std::string getDesc();
+  void setDesc(const std::string& desc);
 
 public:
-    virtual std::string toString();
-    void fromJson(boost::property_tree::ptree& json);
+  virtual std::string toString();
+  void fromJson(boost::property_tree::ptree& json);
 };
 } /* namespace test */
 } /* namespace examples */

@@ -21,6 +21,8 @@ private:
     std::string className;
     std::string classNameUpper;
     std::string parentClassName;
+    boost::property_tree::ptree fields;
+    boost::property_tree::ptree includes;
 
     std::vector<std::string> ns;
 
@@ -106,7 +108,7 @@ private:
         fs << TAB << "virtual ~"<< className << "() = default;" << ENDL << ENDL;
     }
 
-    void generateGetterSetter(std::ofstream& fs, boost::property_tree::ptree& fields) {
+    void generateGetterSetter(std::ofstream& fs) {
         for(auto field : fields) {
             std::string fieldName = field.second.get<std::string>("fieldName");
             std::string fieldCppType = getCppType(field.second.get<std::string>("fieldType"));
@@ -140,7 +142,7 @@ private:
         }
     }
 
-    void generateToString(std::ofstream& fs, boost::property_tree::ptree& fields) {
+    void generateToString(std::ofstream& fs) {
         fs << "std::string " << className << "::toString() {" << ENDL;
         fs << TAB << "std::string sb = \"\";" << ENDL; 
         fs << TAB << "sb += \"{\";"<< ENDL;
@@ -186,7 +188,7 @@ private:
         fs << "}" << ENDL << ENDL;
     }
 
-    void generateFromJson(std::ofstream& fs, boost::property_tree::ptree& fields) {
+    void generateFromJson(std::ofstream& fs) {
         fs << "void " << className << "::fromJson(boost::property_tree::ptree& json) {" << ENDL;
         for(auto field : fields) {
             // FIELD INFOS 
@@ -248,12 +250,12 @@ public:
         for(auto& elem : meta.get_child("namespaces")) {
             ns.push_back(elem.second.data());
         };
+        fields = meta.get_child("fields");
+        includes = meta.get_child("includes");
     }
 
     void generateHeader() {
         std::ofstream fs(outputPath + className + ".h");
-        boost::property_tree::ptree fields = meta.get_child("fields");
-        boost::property_tree::ptree includes = meta.get_child("includes");
 
         startHeaderGuard(fs);
         for(auto include : includes) {
@@ -325,11 +327,9 @@ public:
 
         startNamespace(fs);
 
-        boost::property_tree::ptree fields = meta.get_child("fields");
-
-        generateGetterSetter(fs, fields);
-        generateToString(fs, fields);
-        generateFromJson(fs, fields);
+        generateGetterSetter(fs);
+        generateToString(fs);
+        generateFromJson(fs);
 
         endNamespace(fs);
         fs.close();

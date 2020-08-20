@@ -11,49 +11,49 @@ namespace examples {
 
 class Role {
 public:
-    Role() = default;
-    Role(const Role&) = default;
-    Role(Role&&) = default;
-    Role& operator=(const Role&) = default;
-    Role& operator=(Role&&) = default;
-    virtual ~Role() = default;
+  Role() = default;
+  Role(const Role&) = default;
+  Role(Role&&) = default;
+  Role& operator=(const Role&) = default;
+  Role& operator=(Role&&) = default;
+  virtual ~Role() = default;
 
 private:
-    /**
-    * fieldName : roleId
-    * fieldDesc : roleId
-    */
-    std::string roleId;
+  /**
+  * fieldName : roleId
+  * fieldDesc : roleId
+  */
+  std::string roleId;
 
 public:
-    std::string getRoleId();
-    void setRoleId(const std::string& roleid);
+  std::string getRoleId();
+  void setRoleId(const std::string& roleid);
 
 private:
-    /**
-    * fieldName : roleName
-    * fieldDesc : roleName
-    */
-    std::string roleName;
+  /**
+  * fieldName : roleName
+  * fieldDesc : roleName
+  */
+  std::string roleName;
 
 public:
-    std::string getRoleName();
-    void setRoleName(const std::string& rolename);
+  std::string getRoleName();
+  void setRoleName(const std::string& rolename);
 
 private:
-    /**
-    * fieldName : available
-    * fieldDesc : 비밀번호
-    */
-    std::string available;
+  /**
+  * fieldName : available
+  * fieldDesc : 비밀번호
+  */
+  std::string available;
 
 public:
-    std::string getAvailable();
-    void setAvailable(const std::string& available);
+  std::string getAvailable();
+  void setAvailable(const std::string& available);
 
 public:
-    virtual std::string toString();
-    void fromJson(boost::property_tree::ptree& json);
+  virtual std::string toString();
+  void fromJson(boost::property_tree::ptree& json);
 };
 } /* namespace test */
 } /* namespace examples */
