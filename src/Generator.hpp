@@ -29,7 +29,6 @@ private:
     std::unordered_map<std::string, std::string> cppTypes = {
         {"bool", "bool"},
         {"char", "char"},
-        {"wchar_t", "wchar_t"},
         {"unsigned char", "unsigned char"},
         {"short", "short"},
         {"unsigned short", "unsigned short"},
@@ -39,8 +38,7 @@ private:
         {"float", "float"},
         {"long", "long"},
         {"unsigned long", "unsigned long"},
-        {"string", "std::string"},    
-        {"wstring", "std::wstring"}
+        {"string", "std::string"}
     };
 
 private:
