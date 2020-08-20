@@ -1,0 +1,37 @@
+{
+    "class-name" : "Props",
+    "parent-class-name" : "",
+    "namespaces" : ["test", "examples"],
+
+    "includes" : [
+        "string",
+        "boost/property_tree/ptree.hpp"
+    ],
+
+    "fields" : [
+        {
+            "fieldName" : "empno",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "사번"
+        },
+        {
+            "fieldName" : "salary",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "임금"
+        },
+        {
+            "fieldName" : "ename",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "이름"
+        },
+        {
+            "fieldName" : "dept",
+            "fieldType" : "string",
+            "isArray" : false,
+            "description" : "부서"
+        }
+    ]
+}
