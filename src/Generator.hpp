@@ -13,7 +13,7 @@ namespace meta2Cpp {
 
 class Generator {
 private:
-    std::string meTABath;
+    std::string inputPath;
     std::string outputPath;
 
     boost::property_tree::ptree meta;
@@ -233,14 +233,14 @@ private:
     }
 
 public:
-    Generator(const std::string& meTABath, const std::string& outputPath, int TABSize = 2)
-        : meTABath(meTABath), outputPath(outputPath) {
+    Generator(const std::string& inputPath, const std::string& outputPath, int TABSize = 2)
+        : inputPath(inputPath), outputPath(outputPath) {
         TAB = std::string(TABSize, ' ');
         if(!ends_with(outputPath, "/")) {
             this->outputPath += "/";
         }
 
-        boost::property_tree::read_json(meTABath, meta);        
+        boost::property_tree::read_json(inputPath, meta);        
 
         className = meta.get<std::string>("class-name");
         classNameUpper = toUpper(className);
