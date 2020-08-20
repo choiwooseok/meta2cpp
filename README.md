@@ -22,8 +22,8 @@ make
 ```
 
 # Exmaples
+# INPUT
 ```
-// INPUT META
 {
     "class-name" : "Emp",
     "parent-class-name" : "",
@@ -63,5 +63,24 @@ make
 }
 
 ```
-# OUTPUTS
+# OUTPUT
 * See test/src/generated/
+
+# Support fieldType
+* isArray : true -> vector< fieldType > will be generated
+```
+    std::unordered_map<std::string, std::string> cppTypes = {
+        {"bool", "bool"},
+        {"char", "char"},
+        {"unsigned char", "unsigned char"},
+        {"short", "short"},
+        {"unsigned short", "unsigned short"},
+        {"int", "int"},
+        {"unsigned int", "unsigned int"},
+        {"double", "double"},
+        {"float", "float"},
+        {"long", "long"},
+        {"unsigned long", "unsigned long"},
+        {"string", "std::string"}
+    };
+```
