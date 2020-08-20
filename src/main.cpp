@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
         
         using namespace meta2Cpp;
         Generator g(in, out);
+        // Generator g(in, out, 4);
         g.generateHeader();
         g.generateSource();
     } catch (std::exception& e) {
