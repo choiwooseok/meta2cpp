@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/choiwooseok/meta2cpp/badge)](https://www.codefactor.io/repository/github/choiwooseok/meta2cpp)
+
 # meta2cpp
 * meta to cpp Class Generator proj
     * generate class with methods
